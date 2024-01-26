@@ -1,8 +1,51 @@
-import React from "react";
-import { Button, FloatingLabel, Label, TextInput } from "flowbite-react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import {
+  Alert,
+  Button,
+  FloatingLabel,
+  Label,
+  Spinner,
+  TextInput,
+} from "flowbite-react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignUp = () => {
+  const [inputs, setInputs] = useState();
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  //navigation variable
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    setInputs({
+      ...inputs,
+      [e.target.id]: e.target.value.trim(),
+    });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const { data } = await axios.post("/api/user/createUser", {
+        username: inputs.username,
+        email: inputs.email,
+        password: inputs.password,
+      });
+      if (data.success === false) {
+        return setErrorMessage(data.message);
+      } else {
+        alert(data.message);
+        navigate("/signin");
+      }
+      setLoading(false);
+    } catch (error) {
+      setErrorMessage(error.message);
+      setLoading(false);
+    }
+  };
   return (
     <>
       <div className="min-h-screen flex flex-col md:flex-row  items-center justify-center bg-slate-100 dark:bg-gray-900">
@@ -21,13 +64,18 @@ const SignUp = () => {
           </div>
           {/**Right */}
           <div className="flex-1  flex items-center justify-center">
-            <form action="" className=" w-[60%] space-y-3">
+            <form onSubmit={handleSubmit} className=" w-[60%] space-y-3">
               <div className="flex flex-col gap-2 ">
                 <Label
                   className="text-base tracking-wide font-semibold"
                   value="Username"
                 />
-                <TextInput type="text" placeholder="Username" id="username" />
+                <TextInput
+                  type="text"
+                  placeholder="Username"
+                  id="username"
+                  onChange={handleChange}
+                />
               </div>
               <div className="flex flex-col gap-2 ">
                 <Label
@@ -38,6 +86,7 @@ const SignUp = () => {
                   type="email"
                   placeholder="email@email.com"
                   id="email"
+                  onChange={handleChange}
                 />
               </div>
               <div className="flex flex-col gap-2 ">
@@ -45,11 +94,29 @@ const SignUp = () => {
                   className="text-base tracking-wide font-semibold"
                   value="Password"
                 />
-                <TextInput type="text" placeholder="Password" id="password" />
+                <TextInput
+                  type="text"
+                  placeholder="Password"
+                  id="password"
+                  onChange={handleChange}
+                />
               </div>
               <div>
-                <Button className="w-full" gradientDuoTone="purpleToPink">
-                  Sign Up
+                <Button
+                  className="w-full"
+                  gradientDuoTone="purpleToPink"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Spinner size="sm">
+                        <span className="pl-3">Loading...</span>
+                      </Spinner>
+                    </>
+                  ) : (
+                    "Sign Up"
+                  )}
                 </Button>
               </div>
             </form>
@@ -61,6 +128,7 @@ const SignUp = () => {
             </Link>
           </div>
         </div>
+        {errorMessage && <Alert color="failure">{errorMessage}</Alert>}
       </div>
     </>
   );

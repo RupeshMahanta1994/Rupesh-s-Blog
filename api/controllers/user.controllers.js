@@ -17,10 +17,10 @@ export const CreateUserController = async (req, res, next) => {
     }
 
     //check existing user
-    const existingUser = await userModel.find({ email });
-    if (existingUser) {
-      next(errorhandler(200, "User already exists"));
-    }
+    // const existingUser = await userModel.find({ email });
+    // if (existingUser) {
+    //   return next(errorhandler(200, "User already exists"));
+    // }
     //hashpassword
     const hashedPassword = bcryptjs.hashSync(password, 10);
 
