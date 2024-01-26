@@ -34,6 +34,7 @@ const SignUp = () => {
         email: inputs.email,
         password: inputs.password,
       });
+      console.log(data);
       if (data.success === false) {
         return setErrorMessage(data.message);
       } else {

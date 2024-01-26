@@ -1,19 +1,22 @@
 import React, { useState } from "react";
-import {
-  Alert,
-  Button,
-  FloatingLabel,
-  Label,
-  Spinner,
-  TextInput,
-} from "flowbite-react";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../../redux/user/userSlice";
 
 const SignUp = () => {
   const [inputs, setInputs] = useState();
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  //Redux dispatch variable
+  const dispatch = useDispatch();
+
+  //get global states
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
 
   //navigation variable
   const navigate = useNavigate();
@@ -27,22 +30,19 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
       const { data } = await axios.post("/api/user/signinUser", {
         email: inputs.email,
         password: inputs.password,
       });
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       } else {
-        alert(data.message);
+        dispatch(signInSuccess(data));
         navigate("/");
       }
-      setLoading(false);
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
   return (
