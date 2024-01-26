@@ -1,12 +1,11 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { About, Projects, SignUp, SignIn } from "./pages";
-import { Header } from "./components";
+import { Header, Footer } from "./components";
 
 function App() {
   return (
     <>
-      <h1 className="text-4xl">hello</h1>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -15,6 +14,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </>
   );
