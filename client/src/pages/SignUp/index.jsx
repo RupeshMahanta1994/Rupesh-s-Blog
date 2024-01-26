@@ -122,7 +122,7 @@ const SignUp = () => {
             </form>
           </div>
           <div className="flex space-x-2">
-            <h1 className="dark:text-white">Don't have an Account</h1>
+            <h1 className="dark:text-white">Already have an Account</h1>
             <Link className="underline text-blue-400" to="/signin">
               Sign In
             </Link>
