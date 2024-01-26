@@ -84,3 +84,54 @@ export const SigninUserController = async (req, res, next) => {
     next(error);
   }
 };
+
+//Google auth controller
+
+export const googleAuthController = async (req, res, next) => {
+  try {
+    const { name, email, googlePhotoUrl } = req.body;
+    //check existing user
+    const user = await userModel.findOne({ email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT);
+      const { password, ...rest } = user._doc;
+      return res
+        .status(200)
+        .cookie("access_token", token, { httpOnly: true })
+        .send({
+          success: true,
+          message: "Login Successful",
+          rest,
+        });
+    } else {
+      //generate password
+      const generatePassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      //hash password
+      const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
+      const generateName =
+        name.toLowerCase().split(" ").join("") +
+        Math.random().toString(9).slice(-4);
+      const newUser = new userModel({
+        username: generateName,
+        email,
+        password: hashedPassword,
+        photoUrl: googlePhotoUrl,
+      });
+      await newUser.save();
+      const { password, ...rest } = newUser._doc;
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT);
+      return res
+        .status(200)
+        .cookie("access_token", token, { httpOnly: true })
+        .send({
+          success: true,
+          message: "Login Successful",
+          rest,
+        });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
