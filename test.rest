@@ -1,0 +1,12 @@
+GET http://localhost:8080/api/user/createUser
+
+####
+
+POST http://localhost:8080/api/user/createUser
+Content-Type: application/json
+
+{
+  "username":"rupeshmahanta",
+  "email":"sohan.mahanta@gmail.com",
+  "password":"123456"
+}
