@@ -6,7 +6,18 @@ POST http://localhost:8080/api/user/createUser
 Content-Type: application/json
 
 {
-  "username":"rupeshmahanta",
-  "email":"sohan.mahanta@gmail.com",
+  "username":"barunkumar",
+  "email":"barun.kumar@gmail.com",
+  "password":"123456"
+}
+
+####
+
+POST http://localhost:8080/api/user/signinUser
+Content-Type: application/json
+
+{
+  
+  "email":"barun.kumar@gmail.com",
   "password":"123456"
 }
