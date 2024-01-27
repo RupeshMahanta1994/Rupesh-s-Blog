@@ -2,7 +2,6 @@ import React from "react";
 import {
   Avatar,
   Button,
-  DarkThemeToggle,
   Dropdown,
   Flowbite,
   Navbar,
@@ -10,13 +9,24 @@ import {
 } from "flowbite-react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { FaRegMoon, FaRegSun } from "react-icons/fa";
+import { toggleTheme } from "../../redux/theme/themeSlice";
 
 const Header = () => {
   //location variable
   const path = useLocation().pathname;
   //global variabe
   const { currentUser } = useSelector((state) => state.user);
+  //global theme variables
+  const dispatch = useDispatch();
+  const { theme } = useSelector((state) => state.theme);
+
+  const handleThemeClick = () => {
+    dispatch(toggleTheme());
+  };
+
   return (
     <div>
       <Navbar className="w-full flex items-center justify-between">
@@ -50,8 +60,15 @@ const Header = () => {
           <Navbar.Link href="#">Contact</Navbar.Link>
         </Navbar.Collapse>
         <div className="flex items-center">
-          <div className="mx-2 border rounded-lg dark:border dark:border-gray-600">
-            <DarkThemeToggle />
+          <div
+            className="mx-2 border border-gray-200 p-2 rounded-md dark:border dark:border-gray-600 cursor-pointer"
+            onClick={handleThemeClick}
+          >
+            {theme == "light" ? (
+              <FaRegSun />
+            ) : (
+              <FaRegMoon className="text-white" />
+            )}
           </div>
         </div>
 
@@ -81,7 +98,7 @@ const Header = () => {
                   </Dropdown.Header>
 
                   <Dropdown.Item>
-                    <Link>Dashboard</Link>
+                    <Navbar.Link href={"/dashboard"}>Dashboard</Navbar.Link>
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Item>Sign Out</Dropdown.Item>
@@ -94,9 +111,7 @@ const Header = () => {
             )}
           </div>
           {/**For Mobilescreen only */}
-          <div>
-            <Navbar.Toggle />
-          </div>
+          <Navbar.Toggle />
         </div>
       </Navbar>
     </div>
